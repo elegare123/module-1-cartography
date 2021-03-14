@@ -64,7 +64,7 @@ Now, take a moment and use [ColorHexa.com](https://www.colorhexa.com) to change 
 
 ```{r historic-districts-2}
 p2 <- ggplot() +
-  geom_sf(data = historic, fill = , color = ) +
+  geom_sf(data = historic, fill = "#a4feff", color = "#616161") +
   labs(
     title = "Historic Districts",
     subtitle = "City of St. Louis",
@@ -79,8 +79,8 @@ The maps we made above help identify the historic districts, but they are devoid
 
 ```{r historic-districts-3}
 p3 <- ggplot() +
-  geom_sf() +
-  geom_sf() +
+  geom_sf(data = city, fill = "#ffffff") +
+  geom_sf(data = historic, fill = "#e1edff", color = "#646464") +
   labs(
     title = "Historic Districts",
     subtitle = "City of St. Louis",
@@ -94,10 +94,10 @@ Next, we'll overlay the historic districts on the City's neighborhood boundaries
 
 ```{r historic-districts-4}
 p4 <- ggplot() +
-  geom_sf() +
-  geom_sf() +
-  geom_sf() +
-  geom_sf() +
+  geom_sf(data = city, fill = "#ffffff") +
+  geom_sf(data = nhood, fill = NA, color = "#a9a9a9", size = .2) +
+  geom_sf(data = historic, fill = "#e1edff", color = "#a9a9a9") +
+  geom_sf(data = city, fill = NA) +
   labs(
     title = "Historic Districts",
     subtitle = "City of St. Louis",
@@ -113,7 +113,7 @@ The other topic for this week is to create maps that have different color ramps.
 ```{r, nhood-pop-1}
 p5 <- ggplot() +
   geom_sf(data = city, fill = "#ffffff", color = NA) +
-  geom_sf() +
+  geom_sf(data = nhood, mapping = aes(fill = pop50_den)) +
   geom_sf(data = city, fill = NA, color = "#2a2a2a", size = .9) +
   scale_fill_viridis(name = "Population Density\nper Square Kilometer") +
   labs(
@@ -132,7 +132,7 @@ p6 <- ggplot() +
   geom_sf(data = city, fill = "#ffffff", color = NA) +
   geom_sf(data = nhood, mapping = aes(fill = pop50_den)) +
   geom_sf(data = city, fill = NA, color = "#2a2a2a", size = .9) +
-  scale_fill_viridis(option = , name = "Population Density\nper Square Kilometer") +
+  scale_fill_viridis(option = "cividis", name = "Population Density\nper Square Kilometer") +
   labs(
     title = "1950 Neighborhood Populations",
     subtitle = "City of St. Louis",
@@ -146,12 +146,13 @@ This map is a bit hard to read because the color ramp is continuous. We can bin 
 
 ```{r, nhood-pop-3}
 ## create breaks
-nhood <- map_breaks()
+nhood <- map_breaks(nhood, var = "pop50_den", newvar = "map_breaks",
+                    style = "quantile", classes = 5, dig_lab = 5)
 
 ## map binned data
 p7 <- ggplot() +
   geom_sf(data = city, fill = "#ffffff", color = NA) +
-  geom_sf(data = nhood, mapping = aes(fill = )) +
+  geom_sf(data = nhood, mapping = aes(fill = map_breaks )) +
   geom_sf(data = city, fill = NA, color = "#2a2a2a", size = .9) +
   scale_fill_brewer(palette = "RdPu", name = "Population Density\nper Square Kilometer") +
   labs(
